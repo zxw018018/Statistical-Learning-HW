@@ -1,0 +1,169 @@
+---
+title: "HW1"
+author: "Xinwei Zhang xz2663"
+date: "2/4/2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## P3
+### (a)
+
+```{r }
+set.seed(1)
+x = rnorm(100, mean=0, sd=1)
+```
+
+### (b)
+```{r }
+eps = rnorm(100, mean=0, sd=sqrt(0.25))
+```
+
+### (c)
+```{r }
+y = -1 + 0.5*x + eps
+```
+Length of y is 100. $\beta_0$ is -1, $\beta_1$ is 0.5.
+
+### (d)
+```{r }
+plot(x,y)
+```
+
+There is a linear relationship between x and y with a slope of positive value and variance.
+
+### (e)
+```{r}
+lm.fit = lm(y~x)
+summary(lm.fit)
+```
+
+The linear regression fits a model close to the true value of the coefficients as was constructed. The model has a large F-statistic and a near-zero p-value so the null hypothesis can be rejected.
+
+### (f)
+```{r}
+plot(x,y)
+abline(lm.fit, lwd=3, col=2)
+abline(-1, 0.5, lwd=3, col=3)
+legend(-1, legend = c("model fit", "pop. regression"), col=2:3, lwd=3)
+```
+
+### (g)
+```{r}
+lm.fit_sq = lm(y~x+I(x^2))
+summary(lm.fit_sq)
+```
+
+There is evidence that this model fit increased given the slight increase in $R^2$ and decrease in $RSE$. Although, the p-value suggests that there isn't a relationship between y and $x^2$.
+
+### (h)
+```{r}
+set.seed(1)
+eps1 = rnorm(100, 0, 0.125)
+x1 = rnorm(100)
+y1 = -1 + 0.5*x1 + eps1
+plot(x1, y1)
+lm.fit1 = lm(y1~x1)
+summary(lm.fit1)
+abline(lm.fit1, lwd=3, col=2)
+abline(-1, 0.5, lwd=3, col=3)
+legend(-1, legend = c("model fit", "pop. regression"), col=2:3, lwd=3)
+```
+
+Observed $RSE$ decreased and $R^2$ increased.
+
+### (i)
+```{r}
+set.seed(1)
+eps2 = rnorm(100, 0, 0.8)
+x2 = rnorm(100)
+y2 = -1 + 0.5*x2 + eps2
+plot(x2,y2)
+lm.fit2 = lm(y2~x2)
+summary(lm.fit2)
+abline(lm.fit2, lwd=3, col=2)
+abline(-1, 0.5, lwd=3, col=3)
+legend(-1, legend = c("model fit", "pop. regression"), col=2:3, lwd=3)
+```
+
+Observed $RSE$ increased and $R^2$ decreased.
+
+### (j)
+```{r}
+confint(lm.fit)
+confint(lm.fit1)
+confint(lm.fit2)
+```
+
+All intervals centered around 0.5. The interval of fit1 (less noisy) is narrower than that of fit (original). The interval of fit2 (noisier) is wider than that of fit (original).
+
+## P4
+```{r}
+library(ISLR)
+Advertising <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv",header=T,na.string=',')
+#attach(Advertising)
+model_newspaper = lm(sales~newspaper, data=Advertising)
+model_TV = lm(sales~TV, data=Advertising)
+model_radio = lm(sales~radio, data=Advertising)
+confint(model_newspaper, , 0.92)
+confint(model_TV, , 0.92)
+confint(model_radio, , 0.92)
+plot(Advertising$newspaper,Advertising$sales, xlab = "newspaper", ylab = "sales", main = "sales versus newspaper")
+abline(model_newspaper, lwd=3, col=2)
+confint_newspaper = predict(model_newspaper, newspaper = data.frame(Advertising$newspaper), interval = "confidence", level=0.92)
+lines(Advertising$newspaper, confint_newspaper[,2], col="purple")
+lines(Advertising$newspaper, confint_newspaper[,3], col="purple")
+plot(Advertising$TV,Advertising$sales, xlab = "TV", ylab = "sales", main = "sales versus TV")
+abline(model_TV, lwd=3, col=2)
+confint_TV = predict(model_TV, TV = data.frame(Advertising$TV), interval = "confidence", level=0.92)
+lines(Advertising$TV, confint_TV[,2], col="purple")
+lines(Advertising$TV, confint_TV[,3], col="purple")
+plot(Advertising$radio,Advertising$sales, xlab = "radio", ylab = "sales", main = "sales versus radio")
+abline(model_radio, lwd=3, col=2)
+confint_radio = predict(model_radio, radio = data.frame(Advertising$radio), interval = "confidence", level=0.92)
+lines(Advertising$radio, confint_radio[,2], col="purple")
+lines(Advertising$radio, confint_radio[,3], col="purple")
+```
+
+### P5
+### (a)
+```{r}
+pairs(Auto)
+```
+
+### (b)
+```{r}
+cor(subset(Auto, select=-name))
+```
+
+### (c)
+```{r}
+lm.fit1 = lm(mpg~.-name, data=Auto)
+summary(lm.fit1)
+```
+
+### (i)
+There is a relationship between the predictors and the response by testing the null hypothesis of whether all the regression coeffcients are zero. F statistic is large with small p value, which is againest the null hypothesis.
+
+### (ii)
+Displacement, weight, year and origin have significant relationship to the response.
+
+### (iii)
+The coefficient for year, 0.750773, suggests that for every year, mpg increases by 0.750773. Cars become more fuel efficient every year.
+
+### (d)
+```{r}
+lm.fit2 = lm(mpg~log(weight)+sqrt(horsepower)+I(acceleration^2), data=Auto)
+summary(lm.fit2)
+```
+
+From p values, log(weight) and sqrt(horsepower) have significant relationship to mpg. 
+
+
+
+
