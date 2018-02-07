@@ -105,7 +105,8 @@ All intervals centered around 0.5. The interval of fit1 (less noisy) is narrower
 ## P4
 ```{r}
 library(ISLR)
-Advertising <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv",header=T,na.string=',')
+Advertising <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv",
+                        header=T,na.string=',')
 #attach(Advertising)
 model_newspaper = lm(sales~newspaper, data=Advertising)
 model_TV = lm(sales~TV, data=Advertising)
@@ -113,19 +114,25 @@ model_radio = lm(sales~radio, data=Advertising)
 confint(model_newspaper, , 0.92)
 confint(model_TV, , 0.92)
 confint(model_radio, , 0.92)
-plot(Advertising$newspaper,Advertising$sales, xlab = "newspaper", ylab = "sales", main = "sales versus newspaper")
+plot(Advertising$newspaper,Advertising$sales, xlab = "newspaper", ylab = "sales", 
+     main = "sales versus newspaper")
 abline(model_newspaper, lwd=3, col=2)
-confint_newspaper = predict(model_newspaper, newspaper = data.frame(Advertising$newspaper), interval = "confidence", level=0.92)
+confint_newspaper = predict(model_newspaper, newspaper = data.frame(Advertising$newspaper), 
+                            interval = "confidence", level=0.92)
 lines(Advertising$newspaper, confint_newspaper[,2], col="purple")
 lines(Advertising$newspaper, confint_newspaper[,3], col="purple")
-plot(Advertising$TV,Advertising$sales, xlab = "TV", ylab = "sales", main = "sales versus TV")
+plot(Advertising$TV,Advertising$sales, xlab = "TV", ylab = "sales", 
+     main = "sales versus TV")
 abline(model_TV, lwd=3, col=2)
-confint_TV = predict(model_TV, TV = data.frame(Advertising$TV), interval = "confidence", level=0.92)
+confint_TV = predict(model_TV, TV = data.frame(Advertising$TV), 
+                     interval = "confidence", level=0.92)
 lines(Advertising$TV, confint_TV[,2], col="purple")
 lines(Advertising$TV, confint_TV[,3], col="purple")
-plot(Advertising$radio,Advertising$sales, xlab = "radio", ylab = "sales", main = "sales versus radio")
+plot(Advertising$radio,Advertising$sales, xlab = "radio", ylab = "sales", 
+     main = "sales versus radio")
 abline(model_radio, lwd=3, col=2)
-confint_radio = predict(model_radio, radio = data.frame(Advertising$radio), interval = "confidence", level=0.92)
+confint_radio = predict(model_radio, radio = data.frame(Advertising$radio), 
+                        interval = "confidence", level=0.92)
 lines(Advertising$radio, confint_radio[,2], col="purple")
 lines(Advertising$radio, confint_radio[,3], col="purple")
 ```
