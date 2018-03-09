@@ -1,0 +1,106 @@
+---
+title: "hw3"
+author: "Xinwei Zhang"
+date: "3/8/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## P6
+
+```{r}
+p = c(0.1, 0.15, 0.2, 0.2, 0.55, 0.6, 0.6, 0.65, 0.7, 0.75)
+```
+
+# majority approach
+```{r}
+sum(p>=0.5) > sum(p<0.5)
+```
+The number of red prediction is greater than that of green predictions. So the prediction is red.
+
+# average approach
+```{r}
+mean(p)
+```
+The average of possibilities is less than 0.5. So the prediction is green.
+
+## P7
+# (a)
+```{r}
+library(ISLR)
+attach(OJ)
+
+set.seed(1000)
+train = sample(dim(OJ)[1], 800)
+OJ.train = OJ[train, ]
+OJ.test = OJ[-train, ]
+```
+
+# (b)
+```{r}
+library(tree)
+oj.tree = tree(Purchase ~ ., data = OJ.train)
+summary(oj.tree)
+```
+The tree use three variables: LoyalCH, PriceDiff, WeekofPurchase. The training error rate is 0.175. It has 7 terminal nodes.
+
+# (c)
+```{r}
+oj.tree
+```
+I choose to pick 12). The spliting variable is PriceDiff. The spliting value of this node is 0.015. 72 points are below this node. This is terminal node. The prediciton is Sales=MM. The deviance for all points below this node is 80. 43% points in this node have CH as value of Sales. 57% points have MM as value of Sales.
+
+# (d)
+```{r}
+plot(oj.tree)
+text(oj.tree, pretty = 0)
+```
+LoyalCH is the most important variable. Top three nodes contain LoyalCH. If LoyalCH<0.0356415, the prediction is MM. If LoyalCH>0.753545, the prediction is CH. In between, the prediction depends on WeekofPurchase and PriceDiff.
+
+# (e)
+```{r}
+oj.pred = predict(oj.tree, OJ.test, type="class")
+table(OJ.test$Purchase, oj.pred)
+```
+
+# (f)
+```{r}
+cv.oj = cv.tree(oj.tree, FUN = prune.tree)
+```
+
+# (g)
+```{r}
+plot(cv.oj$size, cv.oj$dev, type = "b", xlab = "tree size", ylab = "error rate")
+```
+
+# (h)
+Size of 7 gives the lowest cross-validated classifiation error rate.
+
+# (i)
+```{r}
+oj.pruned = prune.tree(oj.tree, best = 7)
+```
+
+# (j)
+```{r}
+summary(oj.pruned)
+```
+The training error tate are the same, which is 0.175.
+
+# (k)
+```{r}
+pred.unpruned = predict(oj.tree, OJ.test, type="class")
+misclass.unpruned = sum(OJ.test$Purchase != pred.unpruned)
+misclass.unpruned/length(pred.unpruned)
+pred.pruned = predict(oj.pruned, OJ.test, type="class")
+misclass.pruned = sum(OJ.test$Purchase != pred.pruned)
+misclass.pruned/length(pred.pruned)
+```
+The test error rate are the same, which is 0.196.
+
+
+
+
