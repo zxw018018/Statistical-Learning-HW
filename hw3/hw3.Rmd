@@ -9,6 +9,35 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## P3
+```{r}
+X = c(0.0,0.2,0.4,0.6,0.8,1.0)
+ones = c(1,1,1,1,1,1)
+X = cbind(ones,X)
+y = c(0,0,0,1,0,1)
+
+lr = function(X,y){
+  get_p = function(X,beta){
+    beta = as.vector(beta)
+    return (exp(X%*%beta) / (1 + exp(X%*%beta)))
+  }
+  
+  beta = rep(0,ncol(X))
+  
+  for (i in 0:9){
+    p = as.vector(get_p(X,beta))
+    W = diag(p * (1 - p))
+    delta = solve(t(X)%*%W%*%X) %*% t(X)%*%(y - p)
+    beta = beta + delta
+  }
+  print (beta)
+  return (beta)
+}
+
+result = lr(X,y)
+```
+
+
 ## P6
 
 ```{r}
